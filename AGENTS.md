@@ -14,15 +14,13 @@ Follow them in every session. If a user request conflicts with a rule, say so an
 
 - **One step at a time.** First explain what you will do and why, then wait for confirmation.
 - Do NOT create files or services "for the future".
-- Verify results with commands, not by eye: `docker compose config`, `ruff`, `pyright`, `pytest`.
-- Follow GitHub Flow.
+- Verify results with commands, not by eye: `docker compose config` and the checks from section 9.
 
 ## 3. Project
 
 "Booking analytics" learning project: generator → RabbitMQ → ClickHouse → Superset and Jupyter. Started via `docker compose`. Repository and CI: GitLab (`.gitlab-ci.yml`).
 
 Stack: Python 3.13, Docker Compose, ClickHouse, RabbitMQ, Superset, Postgres, Redis, Jupyter.
-Checks: ruff (lint and format), pyright, pytest.
 
 ## 4. Ownership
 
@@ -43,9 +41,8 @@ Format: `<type>/<short-name>`
 
 - `<type>` is one of the commit types from section 8 (`feat`, `fix`, `refactor`, `perf`, `test`, `ci`, `build`, `chore`, `docs`).
 - `<short-name>`: English, lowercase, kebab-case, 2-4 words, describes the task (not the person or the date).
-- Examples: `feat/booking-generator`, `fix/consumer-reconnect`, `ci/add-pyright-job`, `build/pin-clickhouse-version`, `docs/readme-quickstart`.
+- Examples: `feat/booking-generator`, `fix/consumer-reconnect`.
 - The type is the main type of the work in the branch. If the work needs several types, split it into separate branches.
-- Branch lifetime: 1-3 days.
 
 ### Workflow
 
@@ -74,8 +71,7 @@ Format: `<type>/<short-name>`
   1. Open the link that GitLab prints in the output of `git push`.
   2. Push with options: `git push -u origin <type>/<short-name> -o merge_request.create -o merge_request.target=main`.
 - MR title: same format as a commit message (section 8), e.g. `docs: add agent instructions`.
-- MR description (in Russian): what changed, why, and how it was verified (commands from section 2).
-- Squash must stay disabled on the MR (see Workflow).
+- MR description (in Russian): what changed, why, and how it was verified (commands from section 9).
 - Do NOT merge the MR yourself unless the user explicitly asks.
 - If the MR touches the shared contract (section 4), mention that in the description so the second owner reviews it.
 
@@ -114,14 +110,13 @@ Format: [Conventional Commits](https://www.conventionalcommits.org/)
 | `docs` | documentation |
 
 - `style` is only for code formatting, not for visual UI changes (those are `feat` / `fix`).
-- If behavior changes, it is not `refactor`; use `feat` or `fix`.
-- If several types fit one commit, split the commit.
 
-## 9. Safety
+## 9. Safety and checks
 
 - NEVER run destructive commands without explicit user confirmation: `docker compose down -v`, `docker volume rm`, `git reset --hard`, `git clean`, `git push --force`, `rm -rf`. Explain what will be lost first.
 - NEVER print or quote the contents of `.env`; refer to variable names only.
-- Before every commit, run `ruff check`, `ruff format --check`, `pyright`, `pytest`. Do NOT commit if any of them fails; report the failure instead.
+- Checks: `ruff check`, `ruff format --check`, `pyright`, and `pytest` (if tests exist).
+- Run all checks before every commit. Do NOT commit if any of them fails; report the failure instead.
 
 ## 10. Uncertainty and questions
 
