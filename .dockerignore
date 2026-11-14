@@ -1,0 +1,57 @@
+# Контекст сборки образов (generator, consumer, jupyter):
+# всё, что не нужно внутри контейнера. Отдельные сервисы могут
+# добавлять свой .dockerignore рядом с Dockerfile.
+
+# Git и CI
+.git
+.gitattributes
+.gitignore
+.gitlab-ci.yml
+.gitlab-ci-local/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Секреты и окружение: в образ попадать не должны
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python-артефакты
+**/__pycache__/
+**/*.py[cod]
+**/*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+.coverage
+.coverage.*
+htmlcov/
+.pdm-python
+
+# Jupyter
+**/.ipynb_checkpoints/
+**/*.ipynb_checkpoints/
+
+# Документация, картинки, локальные данные и логи
+README.md
+docs/
+img/
+logs/
+data/
+*.log
+*.dump
+*.sql.gz
+
+# IDE и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
