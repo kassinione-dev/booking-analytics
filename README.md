@@ -49,7 +49,7 @@
 ### Лев — конвейер данных
 
 - [ ] Каркас Docker Compose: все сервисы, именованные volumes, `.env.example`
-- [ ] CI с первой недели: ruff (линтер и форматирование) и pyright на каждый PR в `main`; GitHub Actions или GitLab CI — там, где будет репозиторий
+- [ ] CI с первой недели: ruff (линтер и форматирование) и pyright на каждый MR в `main` — GitLab CI (`.gitlab-ci.yml`)
 - [ ] ClickHouse: init-скрипты со схемой и MV, healthcheck
 - [ ] Генератор: справочники, события с суточной и недельной сезонностью, трендом и аномалиями, история за 30 дней
 - [ ] Генератор: настройки через env (интервал, интенсивность, seed), retry с backoff, graceful shutdown, логирование
@@ -107,7 +107,7 @@ jupyter/notebooks/   # .ipynb с анализом                         (Ам�
 sql/                 # seed_dev.sql, аналитические запросы
 docs/img/            # схема и скриншоты для README
 tests/               # pytest для генератора и потребителя       (Лев)
-.github/workflows/   # CI: ruff → pyright → pytest (или .gitlab-ci.yml) (Лев)
+.gitlab-ci.yml       # CI: ruff → pyright → pytest                     (Лев)
 ```
 
 ## Чек-лист приёмки по владельцам
