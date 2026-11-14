@@ -1,0 +1,2 @@
+# pandas, matplotlib и jupyter уже есть в scipy-notebook.
+clickhouse-connect>=0.8,<1
