@@ -99,6 +99,7 @@
 
 ```
 docker-compose.yml   .env.example   README.md
+pyproject.toml       uv.lock        # зависимости и версия Python (uv)
 clickhouse/init/     # SQL: таблицы, MV                          (Лев)
 generator/           # Python-сервис генерации                   (Лев)
 consumer/            # очередь → ClickHouse                      (Лев)
@@ -109,6 +110,17 @@ docs/img/            # схема и скриншоты для README
 tests/               # pytest для генератора и потребителя       (Лев)
 .gitlab-ci.yml       # CI: ruff → pyright → pytest                     (Лев)
 ```
+
+## Локальная разработка
+
+Сервисы локально не запускаем — для этого есть Docker Compose. Python-окружение нужно только для проверок, и им управляет `uv` (версия Python зафиксирована в `pyproject.toml`):
+
+- `uv sync` — поставить зависимости; `.venv` создаётся автоматически, активировать вручную не нужно;
+- `uv run ruff check` и `uv run ruff format --check` — линтер и форматирование;
+- `uv run pyright` — проверка типов;
+- `uv run pytest` — тесты.
+
+`uv.lock` коммитим вместе с `pyproject.toml`, чтобы у всех были одинаковые версии.
 
 ## Чек-лист приёмки по владельцам
 
