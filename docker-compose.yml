@@ -1,9 +1,8 @@
 services:
   clickhouse:
     image: clickhouse/clickhouse-server:26.9.28.166
-    container_name: clickhouse
     environment:
-      TZ: ${TZ:-UTC}
+      TZ: ${TZ:-Asia/Vladivostok}
       CLICKHOUSE_DB: ${CLICKHOUSE_DB:-analytics}
       CLICKHOUSE_USER: ${CLICKHOUSE_USER:-analytics}
       CLICKHOUSE_PASSWORD: ${CLICKHOUSE_PASSWORD:?CLICKHOUSE_PASSWORD не задан}
