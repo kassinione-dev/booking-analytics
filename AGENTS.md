@@ -8,7 +8,7 @@ If a user request conflicts with a rule, say so and ask before proceeding.
 - Exception: `git commit` on the user's request (see section 5).
 - Talk to the user and write documentation in **Russian**.
 - Write code comments and docstrings in **Russian**.
-- Write code, identifiers, branch names, commit messages, and MR titles in **English**.
+- Write code, identifiers, branch names, commit messages, and PR titles in **English**.
 
 ## 2. Working mode
 
@@ -18,7 +18,7 @@ If a user request conflicts with a rule, say so and ask before proceeding.
 
 ## 3. Project
 
-"Booking analytics" learning project: generator → RabbitMQ → ClickHouse → Superset and Jupyter. Started via `docker compose`. Repository and CI: GitLab (`.gitlab-ci.yml`).
+"Booking analytics" learning project: generator → RabbitMQ → ClickHouse → Superset and Jupyter. Started via `docker compose`. Repository and CI: GitHub (`.github/workflows/`).
 The exact stack and versions are in `pyproject.toml` and `docker-compose.yml`.
 
 ## 4. Ownership
@@ -45,7 +45,7 @@ Format: `<type>/<short-name>`
 
 ### Workflow
 
-- `main` is protected: the server rejects direct pushes. Changes go only through a branch and a merge request.
+- `main` is protected: the server rejects direct pushes. Changes go only through a branch and a pull request.
 - Start a task: `git switch main && git pull`, then `git switch -c <type>/<short-name>`.
 - Update a branch with fresh `main`: `git switch main && git pull && git switch <type>/<short-name> && git merge main`. Use `merge`, NOT `rebase`: it does not rewrite history and needs no force-push.
 - If merge conflicts appear, do not resolve them silently: show the conflicting files to the user, explain the cause, and resolve together.
@@ -65,17 +65,17 @@ Format: `<type>/<short-name>`
 - Before every commit, run `git status` and `git diff --staged`, and check that the staged set contains only files of the current task, no secrets (`.env`), no caches or data volumes, and nothing from another person's zone (section 4).
 - If unrelated changes are present in the working tree, leave them unstaged and tell the user.
 
-### Push and merge request
+### Push and pull request
 
 - **Push ONLY when the user asks**, separately from the commit request: `git push -u origin <type>/<short-name>`.
-- Create a merge request ONLY after a push the user requested. Target branch: `main`. Source: the current branch.
+- Create a pull request ONLY after a push the user requested. Target branch: `main`. Source: the current branch.
 - Ways to create it (use the first available):
-  1. Open the link that GitLab prints in the output of `git push`.
-  2. Push with options: `git push -u origin <type>/<short-name> -o merge_request.create -o merge_request.target=main`.
-- MR title: same format as a commit message (section 8), e.g. `docs: add agent instructions`.
-- MR description (in Russian): what changed, why, and how it was verified (commands from section 9).
-- If the MR touches the shared contract (section 4), mention that in the description so the second owner reviews it.
-- Do NOT merge the MR yourself unless the user explicitly asks.
+  1. Open the link that GitHub prints in the output of `git push`.
+  2. `gh pr create --base main --head <type>/<short-name>` (if the GitHub CLI is available).
+- PR title: same format as a commit message (section 8), e.g. `docs: add agent instructions`.
+- PR description (in Russian): what changed, why, and how it was verified (commands from section 9).
+- If the PR touches the shared contract (section 4), mention that in the description so the second owner reviews it.
+- Do NOT merge the PR yourself unless the user explicitly asks.
 
 ## 6. Secrets and configuration
 
@@ -104,7 +104,7 @@ Format: Conventional Commits
 - Types: `feat`, `fix`, `refactor`, `perf`, `test`, `ci`, `build`, `chore`, `docs`, `style`. Project-specific rules:
   - `fix` includes UI and security fixes.
   - `style` is only for code formatting, not for visual UI changes (those are `feat` / `fix`).
-  - `build` is for Dockerfile and dependencies; `ci` is for GitLab CI and deployment.
+  - `build` is for Dockerfile and dependencies; `ci` is for GitHub Actions and deployment.
   - `chore` is for everything else (`.gitignore`, configs).
 
 ## 9. Safety and checks
@@ -119,7 +119,7 @@ Format: Conventional Commits
 | Python (`generator/`, `consumer/`, `tests/`) | `uv run ruff check`, `uv run ruff format --check`, `uv run pyright` | `uv run pytest` (if tests exist) |
 | `pyproject.toml`, `uv.lock` | `uv lock --check`, then the Python commit checks above | `uv run pytest` (if tests exist) |
 | `docker-compose.yml`, `Dockerfile`, `clickhouse/init/` | `docker compose config` | none |
-| `.gitlab-ci.yml` | ask the user how to validate (do not assume a command) | none |
+| `.github/workflows/` | ask the user how to validate (do not assume a command) | none |
 | Only `docs`/`chore` (Markdown, `.gitignore`) | no automated checks; review `git diff --staged` | none |
 
 - `pytest` checks the working tree, not the index. If unstaged changes are present, say that the result may not match the commit.
