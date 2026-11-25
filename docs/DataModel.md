@@ -56,17 +56,17 @@
 Консьюмер обрабатывает сообщения до вставки в факт:
 
 - **Событие в очереди несёт только ключи, времена и меры.** Денормализованные поля, `list_price_per_hour` и `lead_time_h` подставляет и считает консьюмер.
-- **Событие с неизвестным `user_id` или `resource_id` в факт не попадает.**
+- **Событие с неизвестным `user_id`, `resource_id` или `event_type` в факт не попадает.**
 - **Числовые ограничения проверяются на сырых значениях** до приведения к типам ClickHouse: `UInt16` не выражает отрицательное, а дробное пришлось бы округлять — иначе причина `constraint` не попадёт в журнал.
 - **Отбраковка:** все отброшенные сообщения пишутся в `booking_rejects` с причиной.
 
 ## Журнал отбраковки `booking_rejects`
 
-Поля: `rejected_at`, `event_time`, `booking_id`, `event_type`, `reason`, `payload` (исходное сообщение целиком, JSON). Движок `ReplacingMergeTree()`, `PARTITION BY toYYYYMM(rejected_at)`, `ORDER BY (cityHash64(payload), reason)`.
+Поля: `rejected_at`, `event_time`, `booking_id`, `event_type`, `reason`, `payload` (исходное сообщение целиком, JSON), `count` (`UInt64`, число повторов этой отбраковки). Движок `SummingMergeTree()`, `PARTITION BY toYYYYMM(rejected_at)`, `ORDER BY (cityHash64(payload), reason)`. Читать с `FINAL`, общее число отбракованных — `sum(count)`.
 
 Причины (`reason`): `malformed` (JSON не разобрался), `empty_value`, `constraint` (нарушено числовое ограничение), `unknown_key`, `duplicate`, `mismatch` (тот же ключ, другие поля), `repeat_completed`.
 
-Ключ сортировки построен по содержимому сообщения: у сообщения с битым JSON нет бизнес-полей, и по ним все такие строки схлопнулись бы в одну. У `malformed` поля `event_time`, `booking_id`, `event_type` принимают значения по умолчанию. Читать журнал с `FINAL`.
+Ключ сортировки построен по содержимому сообщения: у сообщения с битым JSON нет бизнес-полей, и по ним все такие строки схлопнулись бы в одну. У `malformed` поля `event_time`, `booking_id`, `event_type` принимают значения по умолчанию. Читать журнал с `FINAL`; число уникальных отбраковок — `count()`, общее число отбракованных — `sum(count)`.
 
 ## Агрегаты и MV
 
